@@ -37,6 +37,30 @@
         }
 
         /**
+         * Get all categories
+         * @return array
+         */
+        public function findAll(): array {
+            $db = new Database();
+            $req = $db->bdd->prepare("SELECT * FROM category");
+            $req->execute();
+            $result = $req->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($result as $category) {
+                $category = new Category(
+                    $category['id'],
+                    $category['name'],
+                    $category['description'],
+                    new DateTime($category['created_at']),
+                    new DateTime($category['updated_at'])
+                );
+                $categories[] = $category;
+            }
+
+            return $categories;
+        }
+
+        /**
          * Create a new category
          * @return array
          */
@@ -49,6 +73,31 @@
             $req->bindValue(':created_at', $this->created_at->format('Y-m-d H:i:s'));
             $req->bindValue(':updated_at', $this->updated_at->format('Y-m-d H:i:s'));
             $req->execute();
+        }
+
+        /**
+         * Update a category
+         * @return bool
+         */
+        public function update(): bool {
+            $db = new Database();
+            $req = $db->bdd->prepare("UPDATE category SET name = :name, description = :description, updated_at = :updated_at WHERE id = :id");
+            $req->bindParam(':name', $this->name);
+            $req->bindParam(':description', $this->description);
+            $req->bindValue(':updated_at', $this->updated_at->format('Y-m-d H:i:s'));
+            $req->bindParam(':id', $this->id);
+            return $req->execute();
+        }
+
+        /**
+         * Delete a category
+         * @return bool
+         */
+        public function delete(): bool {
+            $db = new Database();
+            $req = $db->bdd->prepare("DELETE FROM category WHERE id = :id");
+            $req->bindParam(':id', $this->id);
+            return $req->execute();
         }
 
         /**

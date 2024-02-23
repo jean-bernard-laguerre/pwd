@@ -1,5 +1,4 @@
 <?php
-    require_once '../vendor/autoload.php';
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -13,7 +12,7 @@
         $auth->setPassword($password);
 
         if($auth->register()) {
-            header('Location: login.php');
+            header('Location: /pwd/login');
         }
         else {
             $errorMessage = 'Un utilisateur avec cet email existe déjà';
@@ -21,15 +20,12 @@
     }
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <?= $errorMessage ?>
+
+    <?php if(isset($errorMessage)): ?>
+        <div class="alert alert-danger" role="alert">
+            <?= $errorMessage ?>
+        </div>
+    <?php endif; ?>
     <form method="post" >
         <label for="name">Name</label>
         <input type="text" name="name" id="name">
@@ -39,5 +35,3 @@
         <input type="password" name="password" id="password">
         <input type="submit" value="Register">
     </form>
-</body>
-</html>

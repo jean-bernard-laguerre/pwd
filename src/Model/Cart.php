@@ -59,6 +59,19 @@ class Cart
                 return $this;
         }
 
+        /**
+         * Get all Carts
+         *
+         * @return array
+         */
+        public function findAll(): array {
+            $req = "SELECT * FROM cart";
+            $db = new Database();
+            $req = $db->bdd->prepare($req);
+            $req->execute();
+            $carts = $req->fetchAll(PDO::FETCH_ASSOC);
+            return $carts;
+        }
 
         /**
          * Create a cart
@@ -79,6 +92,20 @@ class Cart
         }
 
         /**
+         * Delete a cart
+         *
+         * @param int $id
+         * @return bool
+         */
+        public function delete($id): bool{
+            $req = "DELETE FROM cart WHERE id = :id";
+            $db = new Database();
+            $req = $db->bdd->prepare($req);
+            $req->bindParam(':id', $id, PDO::PARAM_INT);
+            return $req->execute();
+        }
+
+        /**
          * Get a cart
          *
          * @param int $idUser
@@ -90,6 +117,26 @@ class Cart
             $db = new Database();
             $req = $db->bdd->prepare($req);
             $req->bindParam(":idUser", $idUser);
+            $req->execute();
+            $result = $req->fetch(PDO::FETCH_ASSOC);
+            if($result){
+                return new Cart($result['id'], $result['id_user']);
+            }
+            return null;
+        }
+
+        /**
+         * Get a cart by id
+         *
+         * @param int $id
+         * @return Cart|null
+         */
+        public function findOneById($id): Cart|null
+        {
+            $req = "SELECT * FROM cart WHERE id = :id";
+            $db = new Database();
+            $req = $db->bdd->prepare($req);
+            $req->bindParam(":id", $id);
             $req->execute();
             $result = $req->fetch(PDO::FETCH_ASSOC);
             if($result){

@@ -20,10 +20,13 @@ class ComposerStaticInit8d070178755c320c69f93ee4800660ef
             1 => __DIR__ . '/../..' . '/src/Model/Abstract',
             2 => __DIR__ . '/../..' . '/src/Model/Interface',
             3 => __DIR__ . '/../..' . '/src/Controller',
+            4 => __DIR__ . '/../..' . '/src/Renderer',
+            5 => __DIR__ . '/../..' . '/src',
         ),
     );
 
     public static $classMap = array (
+        'AltoRouter' => __DIR__ . '/..' . '/altorouter/altorouter/AltoRouter.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
     );
 

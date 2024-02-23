@@ -1,6 +1,4 @@
 <?php
-    require_once '../vendor/autoload.php';
-    session_start();
     
     $errorMessage = '';
 
@@ -13,7 +11,7 @@
         $auth->setPassword($password);
 
         if($auth->login()) {
-            header('Location: shop.php');
+            header('Location: /pwd/shop');
         }
         else {
             $errorMessage = 'Les identifiants fournis ne correspondent à aucun utilisateur';
@@ -21,15 +19,12 @@
     }
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <?= $errorMessage ?>
+
+    <?php if(isset($errorMessage)): ?>
+        <div class="alert alert-danger" role="alert">
+            <?= $errorMessage ?>
+        </div>
+    <?php endif; ?>
     <form
         method="post"
     >
@@ -39,5 +34,3 @@
         <input type="password" name="password" id="password">
         <input type="submit" value="Login">
     </form>
-</body>
-</html>

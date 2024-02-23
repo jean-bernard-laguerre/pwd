@@ -9,7 +9,7 @@
             private ?string $fullname = null,
             private ?string $email = null,
             private ?string $password = null,
-            private ?array $role = null,
+            private ?array $role = ['ROLE_USER'],
         ) {
 
         }
@@ -158,6 +158,20 @@
             if($stmt->execute()) {
                 return $this;
             }
+        }
+
+        /**
+         * Delete a user
+         * @param int $id
+         * @return bool
+         */
+        public function delete(int $id): bool {
+            $db = new Database();
+            $sql = "DELETE FROM user WHERE id = :id";
+
+            $stmt = $db->bdd->prepare($sql);
+            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+            return $stmt->execute();
         }
 
         /**

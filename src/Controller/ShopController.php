@@ -23,44 +23,96 @@
         }
 
         /**
-         * Get all products paginated
+         * Get all products paginated 
          * @param int $page
-         * @return array
+         * @return void
          */
-        public function index($page): array {
+        public function index($page = 1): void {
             
             $product = new Product();
+            $products = $product->findPaginated($page);
 
-            return $product->findPaginated($page);
+            echo Renderer::render('shop')->view(['products' => $products, 'page' => $page]);
         }
 
         /**
-         * Show a product
+         * Show a product 
          * @param int $idProduct
-         * @param string $productType
-         * @return AbstractProduct
+         * 
+         * @return void
          */
-        public function showProduct($idProduct, $productType): AbstractProduct {
+        public function showProduct($id): void {
+
+            $errorMessage = null;
             
-            $auth = new AuthenticationController();
-            if ($auth->profile()) {
-                $product = new $productType();
-                return $product->findOneById($idProduct);
-            } else {
-                header('Location: /login');
+            if(isset($id)) {
+                
+                $product = new Product();
+                $product = $product->findOneById($id);
+        
+                if(!$product) {
+                    $errorMessage = 'Le produit demandé n\'existe pas';
+                } else{
+                    $category = new Category();
+                    $category = $category->findOneById($product->getIdCategory());
+                    
+                    $categoryName = __NAMESPACE__ . "\\" . $category->getName();
+                    $product = new $categoryName;
+                    $product = $product->findOneById($id);
+        
+                    if(!$product) {
+                        $errorMessage = 'Le produit demandé n\'est pas disponible';
+                    }
+                }
             }
+        
+            else {
+                $errorMessage = 'Aucun produit n\'a été demandé';
+            }
+
+            if($_SERVER['REQUEST_METHOD'] === 'POST') {
+                if(isset($_POST['quantity'])) {
+                    $this->setUser($_SESSION['user']);
+                    $this->addProductToCart($_POST['quantity'], $id);
+                }
+            }
+
+            echo Renderer::render('product')->view(['product' => $product, 'errorMessage' => $errorMessage]);
         }
 
         /**
          * Show the cart of the user
-         * @return array
+         * @return void
          */
-        public function showCart(): array {
-            $auth = new AuthenticationController();
-            $this->user = $auth->profile();
-            $cart = new Cart();
-            $this->cart = $cart->getCart($this->user->getId());
-            return $this->cart->getAllProducts();
+        public function showCart(): void {
+
+            $this->user = $_SESSION['user'];
+            
+            if ($this->user) {
+                $cart = new Cart();
+                $this->cart = $cart->getCart($this->user->getId());
+                $cartProducts = $this->cart->getAllProducts();
+
+                if($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    if(isset($_POST['delete_product'])) {
+                        $this->deleteProductFromCart(intval($_POST['delete_product']));
+                    }
+                    if(isset($_POST['add_product'])) {
+                        $this->addProductToCart(1, intval($_POST['add_product']));
+                    }
+                    if(isset($_POST['remove_product'])) {
+                        $this->addProductToCart(-1, intval($_POST['remove_product']));
+                    }
+                    header("Location: /pwd/cart");
+                }
+            
+                echo Renderer::render('cart')->view(
+                    ['products' => $cartProducts,
+                    'profile' => $this->user]
+                );
+            } else {
+                header("Location: /pwd/login");
+            }
         }
 
         /**
