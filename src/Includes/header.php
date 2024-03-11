@@ -11,24 +11,45 @@
     <title>Document</title>
 </head>
 <body>
-    <header class='container-fluid'>
-        <nav>
-            <ul>
-                <li><a href="/pwd/shop">Shop</a></li>
-                <li><a href="/pwd/cart">Cart</a></li>
-                <?php if(isset($_SESSION['user'])): ?>
-                    <?php if($_SESSION['user']->getRole() === ['ROLE_ADMIN']): ?>
-                        <li><a href="/pwd/admin">Admin</a></li>
+    <header class="container-fluid">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/pwd">PWD</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/pwd/shop">Shop</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/pwd/cart">Cart</a>
+                        </li>
+                    <?php if(isset($_SESSION['user'])): ?>
+                        <?php if($_SESSION['user']->getRole() === ['ROLE_ADMIN']): ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/pwd/admin">Admin</a>
+                            </li>
+                        <?php endif; ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/pwd/profile">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/pwd/logout">Logout</a>
+                        </li>
+                    <?php else: ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/pwd/login">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/pwd/register">Register</a>
+                        </li>
                     <?php endif; ?>
-                    <li><a href="/pwd/profile">Profile</a></li>
-                    <li><a href="/pwd/logout">Logout</a></li>
-                <?php else: ?>
-                    <li><a href="/pwd/login">Login</a></li>
-                    <li><a href="/pwd/register">Register</a></li>
-                <?php endif; ?>
-            </ul>
-        </nav>
-    </header>
+                </ul>
+            </div>
+        </div>
+    </nav>
     <div class="container">
         
 
